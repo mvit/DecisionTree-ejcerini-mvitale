@@ -1,9 +1,11 @@
 import sys, math
 
 def infoGain(outcomes, features):
-    TotalGain = 0;
+
+    TotalGain = 0
 
     countlist = {}
+    gains = []
     for features in feature:
         countlist[feature] = [0,0,0]
 
@@ -15,7 +17,26 @@ def infoGain(outcomes, features):
         elif outcome.equals('2'):
             countlist[feature][1] += 1
         else:
-            countlist[feature][2] += 2
+            countlist[feature][2] += 1
+
+    for count in countlist:
+        total = count[0] + count[1] + count[2]
+        totalRatio = total/len(outcomes)
+
+        value = 0
+        for c in count:
+            countRatio = c/total
+            value -= countRatio * log(countRatio, 2)
+
+        value *= totalRatio
+
+        gains.append(value)
+
+    for value in gains:
+        TotalGain += value
+
+    return TotalGain
+
 
 
 def main(argv):
