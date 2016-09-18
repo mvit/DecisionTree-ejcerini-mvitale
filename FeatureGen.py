@@ -6,7 +6,14 @@ def bottomleft(line):
 def center(line):
     center = []
     for idx in range(6):
-        center.append(line[3*i:5*i])
+        center.append(line[3*idx:5*idx])
+    p1 = center.count('1')
+    p2 = center.count('2')
+
+    if (p1 > p2):
+        return 1
+    else:
+        return 2
     
     return 0
 
@@ -15,6 +22,13 @@ def threeinrow(line):
 
 def btmcount(line):
     bottom = line[0:7]
+    p1 = bottom.count('1')
+    p2 = bottom.count('2')
+
+    if (p1 > p2):
+        return 1
+    else:
+        return 2
 
     return 0
 
@@ -44,7 +58,7 @@ def main(argv):
             outfile.write(line.strip())
             board = line.split(',')
             #Piece in the lower left corner
-            outfile.write('%d ,' % bottomleft(board))
+            outfile.write(bottomleft(board) + ',')
             #Pieces in the center
             outfile.write('%d ,' % center(board))
             #3 in a row pieces
