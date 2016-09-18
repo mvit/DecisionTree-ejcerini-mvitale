@@ -15,7 +15,7 @@ def infoGain(outcomes, features):
         elif outcome.equals('2'):
             countlist[feature][1] += 1
         else:
-            countlist[feature][2] += 2
+            countlist[feature][2] += 1
 
 
 def main(argv):
