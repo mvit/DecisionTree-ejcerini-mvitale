@@ -60,8 +60,15 @@ def infoGain(outcomes, features, total):
         value = 0
 
         for c in count:
-            countRatio = c/float(total)
-            value -= countRatio * math.log(countRatio)
+            print(c)
+
+            if (c==0):
+                value = 0
+            else:
+                countRatio = c/float(total)
+                print(countRatio)
+                value -= countRatio * math.log(countRatio,2)
+
             print(value)
 
         value *= totalRatio
