@@ -22,7 +22,7 @@ def main(argv):
         for label in labels:
             outfile.write(label)
             if (labels.index(label) < (len(labels)-1)):
-                outfile.write(', ')
+                outfile.write(',')
         
         outfile.write('\n')
         
