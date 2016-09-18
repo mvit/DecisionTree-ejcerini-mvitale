@@ -9,6 +9,7 @@ def center(line):
         center.append(line[2*idx:4*idx])
     p1 = center.count('1')
     p2 = center.count('2')
+
     if (p1 > p2):
         return 1
     else:
@@ -16,9 +17,13 @@ def center(line):
     return 0
 
 def threeinrow(line):
-    for row in range(1,7):
-        for col in range(1,6):
-            
+    for col in range(0,6):
+        #Print the column
+        print(line[col*7:(col*7)+7])
+        for row in range(0,7):
+            #Print the individual element
+            print(line[(col*7) + row])
+    print("BOARD END")
     return 0
 
 def btmcenter(line):
