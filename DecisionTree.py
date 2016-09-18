@@ -97,19 +97,18 @@ def main(argv):
 
         #Do feature reading
         for line in file:
-            print(line)
             board = line.strip().split(',')
             outcomes.append(board[feat_idx])
 
             for name in featurenames:
                 name_idx = featurenames.index(name)
-                features[name].append(board[feat_idx + name_idx])
+                features[name].append(board[feat_idx + 1 + name_idx])
 
         #Build the tree by information gain
         for feature in features:
             print(feature)
             print(features[feature])
-            infoGain(outcomes, features[feature])
+            infoGain(outcomes, features[feature], False)
 
 if __name__ == "__main__":
     main(sys.argv[1:])
