@@ -6,3 +6,7 @@ outDataSet.csv
 *.xml
 
 smoldataset.csv
+
+*.xml
+
+.idea/workspace.xml

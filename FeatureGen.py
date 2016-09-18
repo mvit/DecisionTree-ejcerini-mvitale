@@ -5,6 +5,8 @@ def bottomleft(line):
 
 def center(line):
     center = []
+    for idx in range(1, 6):
+        center.append(line[3*idx:5*idx])
     for idx in range(1,5):
         center.append(line[2*idx:4*idx])
     p1 = center.count('1')
@@ -17,6 +19,10 @@ def center(line):
     return 0
 
 def threeinrow(line):
+    count = 0
+    p1threes = 0
+    p2threes = 0
+
     for col in range(0,6):
         #Print the column
         print(line[col*7:(col*7)+7])
