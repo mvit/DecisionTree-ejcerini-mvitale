@@ -1,37 +1,36 @@
 import sys, math
 
-def makeTree(outcomes, featurelist):
+class Node:
+    feature = ""
+    nodes = {}
+    lines = []
+
+def makeTree(outcomes, features):
     TotalEntropy = infoGain(outcomes, outcomes, True)
 
     gains = {}
 
-    for feature in featurelist:
-        gains[feature[0]] = TotalEntropy - infoGain(outcomes, feature, False)
-
+    for feature in features:
+        gains[feature] = TotalEntropy - infoGain(outcomes, features[feature], False)
 
     largest = 0
 
     n = Node()
     index = 0
 
-    for feature in featurelist:
+    for feature in features:
         if(gains[feature[0]] > largest):
             largest = gains[feature[0]]
             n.feature = feature[0]
-            featurelist.index(feature)
-
+            features.index(feature)
 
     lineNums = {}
 
-    for feature in featurelist[index]:
+    for feature in features[index]:
         lineNums[feature] = []
 
-    for feature in featurelist[index]:
+    for feature in features[index]:
         lineNums[feature].append(featurelist[index].index(feature))
-
-
-
-
 
 def infoGain(outcomes, features, total):
 
@@ -55,11 +54,11 @@ def infoGain(outcomes, features, total):
 
     for val in countlist:
         count = countlist[val]
-        
+
         total = count[0] + count[1] + count[2]
         totalRatio = total/float(len(outcomes))
         value = 0
-        
+
         for c in count:
             countRatio = c/float(total)
             value -= countRatio * math.log(countRatio)
@@ -114,11 +113,4 @@ def main(argv):
 
 if __name__ == "__main__":
     main(sys.argv[1:])
-
-class Node:
-    feature = ""
-    nodes = {}
-    lines = []
-
-
 
