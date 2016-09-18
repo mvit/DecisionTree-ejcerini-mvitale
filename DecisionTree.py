@@ -1,19 +1,22 @@
 import sys, math
 
-def infoGain(outcome, feature):
+def infoGain(outcomes, features):
     TotalGain = 0;
 
-    dataset = [];
-    features= [];
+    countlist = {}
+    for features in feature:
+        countlist[feature] = [0,0,0]
 
-    for x in range(0, len(outcome)):
-        if feature[x] not in features:
-            features.append(feature[x]);
-            dataset.append([0, 0, 0]);
+    for outcome in outcomes:
+        idx = outcomes.index(outcome)
+        feature = features{idx}
+        if outcome.equals('1'):
+            countlist[feature][0] += 1
+        elif outcome.equals('2'):
+            countlist[feature][1] += 1
+        else:
+            countlist[feature][2] += 2
 
-        index  = features.index(feature[x]);
-
-        dataset[index][outcome[x]] += 1;
 
 def main(argv):
     if (len(argv) < 2):
