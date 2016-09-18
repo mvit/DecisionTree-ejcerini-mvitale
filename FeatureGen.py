@@ -1,5 +1,23 @@
 import sys
 
+def bottomleft(line):
+    return line[0]
+
+def center(line):
+    center = []
+    for idx in range(6):
+        center.append(line[3*i:5*i])
+    
+    return 0
+
+def threeinrow(line):
+    return 0
+
+def btmcount(line):
+    bottom = line[0:7]
+
+    return 0
+
 def main(argv):
     #Every 6 digits is a column
     if (len(argv) < 2):
@@ -24,15 +42,16 @@ def main(argv):
         
         for line in file:
             outfile.write(line.strip())
+            board = line.split(',')
             #Piece in the lower left corner
-            outfile.write('0,')
+            outfile.write('%d ,' % bottomleft(board))
             #Pieces in the center
-            outfile.write('0,')
-            outfile.write('0,')
+            outfile.write('%d ,' % center(board))
             #3 in a row pieces
-            outfile.write('0,')
-            outfile.write('0,')
-            
+            outfile.write('%d ,' % threeinrow(board))
+            #Bottom Count
+            outfile.write('%d ,' % btmcount(board))
+            outfile.write('\n')
         outfile.close()
 
 if __name__ == "__main__":
