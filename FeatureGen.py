@@ -51,7 +51,8 @@ def main(argv):
     #Every 6 digits is a column
     if (len(argv) < 2):
         print("USAGE: python FeatureGen.py infile.csv outfile.csv")
-    
+        return 0
+
     with open(argv[0], 'r') as file:
         outfile = open(argv[1], 'w')
         #Parse labels
@@ -71,18 +72,19 @@ def main(argv):
         outfile.write('\n')
         
         for line in file:
-            outfile.write(line.strip())
+            print(line)
+            outfile.write(line.strip() + ',')
             board = line.split(',')
             #Piece in the lower left corner
             outfile.write(bottomleft(board) + ',')
             #Pieces in the center
-            outfile.write('%d ,' % center(board))
+            outfile.write('%d,' % center(board))
             #3 in a row pieces
-            outfile.write('%d ,' % threeinrow(board))
+            outfile.write('%d,' % threeinrow(board))
             #Bottom Count
-            outfile.write('%d ,' % btmcount(board))
+            outfile.write('%d,' % btmcount(board))
             #Bottom Center
-            outfile.write('%d ,' % btmcenter(board))
+            outfile.write('%d' % btmcenter(board))
             
             outfile.write('\n')
         outfile.close()
