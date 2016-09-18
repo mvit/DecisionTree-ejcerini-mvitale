@@ -21,3 +21,18 @@ def main(argv):
             
 if __name__ == "__main__":
     main(sys.argv[1:])
+
+def infoGain(outcome, feature):
+    TotalGain = 0;
+
+    dataset = [];
+    features= [];
+
+    for x in range(0, len(outcome)):
+        if feature[x] not in features:
+            features.append(feature[x]);
+            dataset.append([0, 0, 0]);
+
+        index  = features.index(feature[x]);
+
+        dataset[index][outcome[x]] += 1;
