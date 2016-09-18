@@ -9,12 +9,10 @@ def center(line):
         center.append(line[3*idx:5*idx])
     p1 = center.count('1')
     p2 = center.count('2')
-
     if (p1 > p2):
         return 1
     else:
         return 2
-    
     return 0
 
 def threeinrow(line):
@@ -24,12 +22,10 @@ def btmcount(line):
     bottom = line[0:7]
     p1 = bottom.count('1')
     p2 = bottom.count('2')
-
     if (p1 > p2):
         return 1
     else:
         return 2
-
     return 0
 
 def main(argv):
