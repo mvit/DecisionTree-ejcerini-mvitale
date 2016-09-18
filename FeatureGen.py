@@ -3,7 +3,7 @@ import sys
 def main(argv):
     #Every 6 digits is a column
     if (len(argv) < 2):
-        print("python FeatureGen.py infile.csv outfile.csv")
+        print("USAGE: python FeatureGen.py infile.csv outfile.csv")
     
     with open(argv[0], 'r') as file:
         outfile = open(argv[1], 'w')
@@ -11,13 +11,9 @@ def main(argv):
         labels = file.readline().strip().split(',')
         print(labels)
         labels.append('bottomleft')
-        labels.append('p1center')
-        labels.append('p2center')
-        labels.append('p13inrow')
-        labels.append('p23inrow')
-        labels.append('p1btmcount')
-        labels.append('p2btmcount')
-        
+        labels.append('center')
+        labels.append('3inrow')
+        labels.append('btmcount')
         
         for label in labels:
             outfile.write(label)
@@ -29,9 +25,14 @@ def main(argv):
         for line in file:
             outfile.write(line.strip())
             #Piece in the lower left corner
-            outfile.write('')
-            #Pieces in the bottom
-            outfile.write('')
+            outfile.write('0,')
+            #Pieces in the center
+            outfile.write('0,')
+            outfile.write('0,')
+            #3 in a row pieces
+            outfile.write('0,')
+            outfile.write('0,')
+            
         outfile.close()
 
 if __name__ == "__main__":
