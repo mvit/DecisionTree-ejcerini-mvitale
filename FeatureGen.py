@@ -18,6 +18,17 @@ def center(line):
 def threeinrow(line):
     return 0
 
+def btmcenter(line):
+    bottom = line[3:5]
+    p1 = bottom.count('1')
+    p2 = bottom.count('2')
+    
+    if (p1 > p2):
+        return 1
+    else:
+        return 2
+    return 0
+
 def btmcount(line):
     bottom = line[0:7]
     p1 = bottom.count('1')
@@ -42,7 +53,8 @@ def main(argv):
         labels.append('center')
         labels.append('3inrow')
         labels.append('btmcount')
-        
+        labels.append('btmcenter')
+
         for label in labels:
             outfile.write(label)
             if (labels.index(label) < (len(labels)-1)):
@@ -61,6 +73,9 @@ def main(argv):
             outfile.write('%d ,' % threeinrow(board))
             #Bottom Count
             outfile.write('%d ,' % btmcount(board))
+            #Bottom Center
+            outfile.write('%d ,' % btmcenter(board))
+            
             outfile.write('\n')
         outfile.close()
 
