@@ -71,8 +71,6 @@ def infoGain(outcomes, features, total):
 
     return TotalGain
 
-
-
 def main(argv):
     if (len(argv) < 2):
         print("USAGE: python DecisionTree.py infile.csv num_folds")
