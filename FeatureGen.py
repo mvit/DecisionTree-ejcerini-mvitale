@@ -5,8 +5,8 @@ def bottomleft(line):
 
 def center(line):
     center = []
-    for idx in range(6):
-        center.append(line[3*idx:5*idx])
+    for idx in range(1,5):
+        center.append(line[2*idx:4*idx])
     p1 = center.count('1')
     p2 = center.count('2')
     if (p1 > p2):
@@ -16,10 +16,13 @@ def center(line):
     return 0
 
 def threeinrow(line):
+    for row in range(1,7):
+        for col in range(1,6):
+            
     return 0
 
 def btmcenter(line):
-    bottom = line[3:5]
+    bottom = line[2:4]
     p1 = bottom.count('1')
     p2 = bottom.count('2')
     
@@ -30,7 +33,7 @@ def btmcenter(line):
     return 0
 
 def btmcount(line):
-    bottom = line[0:7]
+    bottom = line[0:6]
     p1 = bottom.count('1')
     p2 = bottom.count('2')
     if (p1 > p2):
