@@ -6,28 +6,31 @@ def infoGain(outcomes, features):
 
     countlist = {}
     gains = []
-    for features in feature:
+    
+    for feature in features:
         countlist[feature] = [0,0,0]
 
     for outcome in outcomes:
         idx = outcomes.index(outcome)
         feature = features[idx]
-        if outcome.equals('1'):
+        if outcome=='1':
             countlist[feature][0] += 1
-        elif outcome.equals('2'):
+        elif outcome=='2':
             countlist[feature][1] += 1
         else:
             countlist[feature][2] += 1
 
-    for count in countlist:
+    for val in countlist:
+        count = countlist[val]
+        
         total = count[0] + count[1] + count[2]
-        totalRatio = total/len(outcomes)
-
+        totalRatio = total/float(len(outcomes))
         value = 0
+        
         for c in count:
-            countRatio = c/total
-            value -= countRatio * log(countRatio, 2)
-
+            countRatio = c/float(total)
+            value -= countRatio * math.log(countRatio)
+            print(value)
         value *= totalRatio
 
         gains.append(value)
@@ -40,13 +43,14 @@ def infoGain(outcomes, features):
 def main(argv):
     if (len(argv) < 2):
         print("USAGE: python DecisionTree.py infile.csv num_folds")
+        return 0
     
     with open(argv[0], 'r') as file:
         #Do feature recognition
         labels = file.readline().strip().split(',')
         feat_idx = labels.index('winner')
         featurenames = labels[feat_idx + 1:]
-        print(features)
+        print(featurenames)
         
         outcomes = []
         features = {}
@@ -57,8 +61,8 @@ def main(argv):
 
         #Do feature reading
         for line in file:
+            print(line)
             board = line.strip().split(',')
-            print(board)
             outcomes.append(board[feat_idx])
 
             for name in featurenames:
@@ -67,7 +71,10 @@ def main(argv):
 
         #Build the tree by information gain
         for feature in features:
-            
+            print(feature)
+            print(features[feature])
+            infoGain(outcomes, features[feature])
+
 if __name__ == "__main__":
     main(sys.argv[1:])
 
