@@ -176,6 +176,14 @@ def bfs(node):
 
     return visited
 
+def traverseTree(tree, testData):
+    if not tree.nodes:
+        return tree.feature
+
+    n = tree.nodes[testData[tree.feature]]
+
+    return traverseTree(n, testData);
+
 def main(argv):
     if (len(argv) < 2):
         print("USAGE: python DecisionTree.py infile.csv num_folds")
