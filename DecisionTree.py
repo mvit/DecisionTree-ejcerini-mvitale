@@ -5,6 +5,10 @@ class Node:
     nodes = []
     #lines = []
 
+    def _init_(self):
+        feature = ""
+        nodes = []
+
 def makeTree(outcomes, features):
     if not features:
         print("end of tree")
