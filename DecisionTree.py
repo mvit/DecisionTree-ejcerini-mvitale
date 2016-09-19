@@ -1,66 +1,75 @@
-import sys, math
+import sys, math, array, copy
 
 class Node:
     feature = ""
-    nodes = {}
-    lines = []
+    nodes = []
+    #lines = []
 
 def makeTree(outcomes, features):
     TotalEntropy = infoGain(outcomes, outcomes, True)
 
     gains = {}
+    
+    maxval = 0
+    best = ''
 
     for feature in features:
-        gains[feature] = TotalEntropy - infoGain(outcomes, features[feature], False)
-
-    largest = 0
+        val = float(TotalEntropy) - infoGain(outcomes, features[feature], False)
+        if (val < maxval):
+            maxval = val
+            best = feature
 
     n = Node()
-    index = 0
 
-    for feature in features:
-        if(gains[feature[0]] > largest):
-            largest = gains[feature[0]]
-            n.feature = feature[0]
-            features.index(feature)
+    for value in set(features[best]):
+        #Get new example list
 
-    lineNums = {}
+        notbest = copy.deepcopy(features)
+        del notbest[best]
+        #print(notbest)
+        new_features = {}
+        new_outcomes = []
 
-    for feature in features[index]:
-        lineNums[feature] = []
+        ids =  [i for i,x in enumerate(features[best]) if x == value]
+        
+        for feature in notbest:
+            new_features[feature] = []
 
-    for feature in features[index]:
-        lineNums[feature].append(featurelist[index].index(feature))
+        for idx in ids:
+            new_outcomes.append(outcomes[idx])
+            for feature in notbest:
+                new_features[feature].append(features[feature][idx])
+        print("node")
+        print(new_outcomes)
+        print(new_features)
+        #Make a subtree from those
+        n.nodes.append(makeTree(new_outcomes, new_features))
+
+    return n
 
 def infoGain(outcomes, features, total):
 
     TotalGain = 0
 
     countlist = {}
-    gains = []
+    gains = array.array('f')
     
     for feature in features:
         countlist[feature] = [0,0,0]
     
-    print(countlist)
-    
     for idx in range(len(outcomes)):
         outcome = outcomes[idx]
         feature = features[idx]
-        
-        print((outcome, feature))
+        #print((outcome, feature))
         if outcome=='1':
             countlist[feature][0] += 1
         elif outcome=='2':
             countlist[feature][1] += 1
         else:
             countlist[feature][2] += 1
-    
-    print(countlist)
-    
+
     for val in countlist:
         count = countlist[val]
-        print(count)
         total = count[0] + count[1] + count[2]
         totalRatio = total/float(len(outcomes))
         value = 0
@@ -70,17 +79,14 @@ def infoGain(outcomes, features, total):
                 value = 0
             else:
                 countRatio = c/float(total)
-                value -= countRatio * math.log(countRatio,2)
-
-            print(value)
-
-        if not total:
-            value *= totalRatio
-
-        gains.append(value)
+                value -= float(countRatio) * math.log(countRatio,2)
+                
+            if not total:
+                value *= totalRatio
+            gains.append(value)
 
     for value in gains:
-        TotalGain += value
+        TotalGain += float(value)
 
     return TotalGain
 
@@ -94,7 +100,6 @@ def main(argv):
         labels = file.readline().strip().split(',')
         feat_idx = labels.index('winner')
         featurenames = labels[feat_idx + 1:]
-        print(featurenames)
         
         outcomes = []
         features = {}
@@ -113,9 +118,8 @@ def main(argv):
                 features[name].append(board[feat_idx + 1 + name_idx])
 
         #Build the tree by information gain
-        for feature in features:
-            print(feature)
-            infoGain(outcomes, features[feature], False)
+        n = makeTree(outcomes, features)
+
 
 if __name__ == "__main__":
     main(sys.argv[1:])
