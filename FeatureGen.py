@@ -25,13 +25,45 @@ def center(line):
     return 0
 
 def threeinrow(line):
-    count = 0
+    count = [0, 0, 0, 0]
     p1threes = 0
     p2threes = 0
 
     barray = board(line)
 
+    for i in range(0,6):
+        for j in range (0,7):
+            if barray is not '0':
+                currentPlayer = barray[i][j]
+                for x in range(0,3):
+                    if j + x < 7 and barray[i][j+x] == currentPlayer:
+                        count[0] += 1;
+
+                    if i + x < 6 and barray[i + x][j] == currentPlayer:
+                        count[1] += 1;
+
+                    if i + x < 6 and j + x < 7 and barray[i+x][j+x] == currentPlayer:
+                        count[2] += 1;
+
+                    if i - x <= 0 and j + x < 7 and barray[i-x][j+x] == currentPlayer:
+                        count[3] += 1;
+                if currentPlayer is '1':
+                    for c in count:
+                        if c >= 3:
+                            p1threes += 1
+                elif currentPlayer is '2':
+                    for c in count:
+                        if c >= 3:
+                            p2threes += 1
+
     print("BOARD END")
+
+    if p1threes > p2threes:
+        return 1
+
+    if p2threes > p1threes:
+        return 2
+
     return 0
 
 def btmcenter(line):
