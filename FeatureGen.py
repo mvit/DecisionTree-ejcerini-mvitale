@@ -14,16 +14,11 @@ def bottomleft(line):
 
 def center(line):
     center = []
-    for idx in range(1,5):
-        center.append(line[2*idx:4*idx])
+    for idx in range(0,7):
+        center.extend(line[2 + (7 * idx): 5 + (7 * idx)])
     p1 = center.count('1')
     p2 = center.count('2')
-
-    if (p1 > p2):
-        return 1
-    else:
-        return 2
-    return 0
+    return p1-p2
 
 def threeinrow(line):
     count = [0, 0, 0, 0]
@@ -57,36 +52,20 @@ def threeinrow(line):
                         if c >= 3:
                             p2threes += 1
 
-    print("BOARD END")
+    return p1threes - p2threes
 
-    if p1threes > p2threes:
-        return 1
-
-    if p2threes > p1threes:
-        return 2
-
-    return 0
-
-def btmcenter(line):
-    bottom = line[2:4]
-    p1 = bottom.count('1')
-    p2 = bottom.count('2')
-    
-    if (p1 > p2):
-        return 1
-    else:
-        return 2
-    return 0
+def center_row(line):
+    center= line[14:27]
+    p1 = center.count('1')
+    p2 = center.count('2')
+    return (p1-p2)
 
 def btmcount(line):
     bottom = line[0:6]
     p1 = bottom.count('1')
     p2 = bottom.count('2')
-    if (p1 > p2):
-        return 1
-    else:
-        return 2
-    return 0
+
+    return (p1-p2)
 
 def main(argv):
     #Every 6 digits is a column
@@ -103,7 +82,7 @@ def main(argv):
         labels.append('center')
         labels.append('3inrow')
         labels.append('btmcount')
-        labels.append('btmcenter')
+        labels.append('centerrow')
 
         for label in labels:
             outfile.write(label)
@@ -124,7 +103,7 @@ def main(argv):
             #Bottom Count
             outfile.write('%d,' % btmcount(board))
             #Bottom Center
-            outfile.write('%d' % btmcenter(board))
+            outfile.write('%d' % center_row(board))
             
             outfile.write('\n')
         outfile.close()
