@@ -2,7 +2,6 @@ import sys, math, array, copy, random
 from collections import Counter
 
 class Node:
-
     def __init__(self):
         self.feature = ""
         self.nodes = {}
@@ -26,31 +25,25 @@ def makeTree(node, outcomes, features, m):
     print(outcomes)
     print(features)
     print(m)
-    if not features:
-        print("End of Tree")
-        child = Node()
-        child.setFeature(str(m))
-        return child
-
-    if (len(outcomes) == 1):
-        print("End of Tree")
-        child = Node()
-        child.setFeature(str(m))
-        return child
 
     print("Tree on")
     print(node)
+
     TotalEntropy = getTotalEntropy(outcomes)
     gains = {}
-    
     maxval = 0
     best = ''
+
+    if ((len(outcomes) == 1) or (not features) or TotalEntropy == 0.0):
+        print("End of Tree")
+        child = Node()
+        child.setFeature(str(m))
+        return child
 
     for feature in features:
         info = infoGain(outcomes, features[feature])
         val = float(TotalEntropy - info)
-        print(TotalEntropy)
-        print(info)
+
         if (val > maxval):
             print("new maxval")
             maxval = val
@@ -59,8 +52,10 @@ def makeTree(node, outcomes, features, m):
     node.setFeature(best)
 
     for value in set(features[best]):        #Get new example list
+
         notbest = copy.deepcopy(features)
         del notbest[best]
+
         new_features = {}
         new_outcomes = []
 
