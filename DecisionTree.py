@@ -32,7 +32,6 @@ def makeTree(node, outcomes, features, m):
     print("Tree on")
     print(node)
     TotalEntropy = infoGain(outcomes, outcomes, True)
-
     gains = {}
     
     maxval = 0
@@ -41,8 +40,6 @@ def makeTree(node, outcomes, features, m):
     for feature in features:
         info = infoGain(outcomes, features[feature], False)
         val = float(TotalEntropy) - infoGain(outcomes, features[feature], False)
-        print(feature)
-        print(val)
         if (val < maxval):
             maxval = val
             best = feature
@@ -67,7 +64,9 @@ def makeTree(node, outcomes, features, m):
                 new_features[feature].append(features[feature][idx])
 
         mcount = Counter(new_outcomes)
-        newm = mcount.most_common(1)
+        commonm = mcount.most_common(1)[0]
+        print(commonm)
+        newm = commonm[1]
         print(newm)
 
         #Make a subtree from those
@@ -218,7 +217,6 @@ def main(argv):
         for line in file:
             dataset.append(line)
 
-        print(len(dataset))
         learnset = k_fold_data(dataset, int(argv[1]))
 
         outcomes = []
@@ -236,13 +234,8 @@ def main(argv):
                     name_idx = featurenames.index(name)
                     features[name].append(board[feat_idx + 1 + name_idx])
 
-        print(len(outcomes))
-        print(len(testset))
-        print(outcomes)
-        print(features)
         #Build the tree by information gain
         tree = makeTree(Node(), outcomes, features, 0)
-        print('THIS IS DAD')
         printTree(tree)
 
 
