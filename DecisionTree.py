@@ -2,20 +2,21 @@ import sys, math, array, copy
 
 class Node:
     feature = ""
-    nodes = []
-
+    nodes = {}
+    
     def printNode(self):
-        print(self.feature)
-        for node in self.nodes:
-            print("Child {0} of {1}".format(self.nodes.index(node),self.feature))
-            if node:
-                node.printNode()
+        # print(self.feature)
+        # for node in self.nodes:
+        #     print("Child {0} of {1}".format(self.nodes.index(node),self.feature))
+        #     if node:
+        #         node.printNode()
+        return self.feature
 
     def _init_(self):
-        feature = ""
-        nodes = []
+        self.feature = ""
+        self.nodes = []
 
-def makeTree(outcomes, features):
+def makeTree(node, outcomes, features):
     if not features:
         return None
     
@@ -35,12 +36,13 @@ def makeTree(outcomes, features):
             maxval = val
             best = feature
 
-    n = Node()
-    n.feature = best
+    node.feature = best
 
-    print(n.feature)
+    print(node.feature)
 
     for value in set(features[best]):
+        node.nodes[value] = None
+        
         #Get new example list
         notbest = copy.deepcopy(features)
         del notbest[best]
@@ -57,10 +59,11 @@ def makeTree(outcomes, features):
             new_outcomes.append(outcomes[idx])
             for feature in notbest:
                 new_features[feature].append(features[feature][idx])
-        #Make a subtree from those
-        n.nodes.append(makeTree(new_outcomes, new_features))
 
-    return n
+        #Make a subtree from those
+        node.nodes[value] = makeTree(Node(), new_outcomes, new_features)
+
+    return node
 
 def infoGain(outcomes, features, total):
 
@@ -133,8 +136,8 @@ def main(argv):
                 features[name].append(board[feat_idx + 1 + name_idx])
 
         #Build the tree by information gain
-        n = makeTree(outcomes, features)
-        n.printNode()
+        tree = makeTree(Node(), outcomes, features)
+        tree.printNode()
 
 
 if __name__ == "__main__":
