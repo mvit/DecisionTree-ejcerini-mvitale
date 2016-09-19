@@ -1,4 +1,5 @@
 import sys, math, array, copy
+from collections import Counter
 
 class Node:
 
@@ -16,21 +17,17 @@ class Node:
     def printNode(self):
         print("Node Feature")
         print(self.feature)
-        print("Splits")
-        print(self.nodes)
-        count = 0
-        for node in self.nodes:
-            count+=1
-            print(count)
-            print(self.nodes[node].feature)
+
         for node in self.nodes:
             if self.nodes[node]:
                 self.nodes[node].printNode()
 
-def makeTree(node, outcomes, features):
+def makeTree(node, outcomes, features, m):
     if not features:
         print("End of Tree")
-        return None
+        child = Node()
+        child.setFeature(Integer.toString(m))
+        return child
 
     print("Tree on")
     print(node)
@@ -40,6 +37,7 @@ def makeTree(node, outcomes, features):
     
     maxval = 0
     best = ''
+
     for feature in features:
         info = infoGain(outcomes, features[feature], False)
         val = float(TotalEntropy) - infoGain(outcomes, features[feature], False)
@@ -69,9 +67,13 @@ def makeTree(node, outcomes, features):
             for feature in notbest:
                 new_features[feature].append(features[feature][idx])
 
+        mcount = Counter(new_outcomes)
+        newm = mcount.mostCommon()
+        print(newm)
+
         #Make a subtree from those
         print("adding child for node {0}".format(best))
-        child = makeTree(Node(), new_outcomes, new_features)
+        child = makeTree(Node(), new_outcomes, new_features, newm)
         if child :
             print("child {0} valid".format(value))
             node.addNode(value, child)
@@ -178,13 +180,16 @@ def main(argv):
     if (len(argv) < 2):
         print("USAGE: python DecisionTree.py infile.csv num_folds")
         return 0
-    
+
     with open(argv[0], 'r') as file:
         #Do feature recognition
         labels = file.readline().strip().split(',')
         feat_idx = labels.index('winner')
         featurenames = labels[feat_idx + 1:]
-        
+
+        dataset = []
+        testset = []
+
         outcomes = []
         features = {}
         
@@ -194,6 +199,9 @@ def main(argv):
 
         #Do feature reading
         for line in file:
+            dataset.append(line)
+            
+        for data in dataset:
             board = line.strip().split(',')
             outcomes.append(board[feat_idx])
 
@@ -201,9 +209,8 @@ def main(argv):
                 name_idx = featurenames.index(name)
                 features[name].append(board[feat_idx + 1 + name_idx])
 
-        kfolds = k_fold_data
         #Build the tree by information gain
-        tree = makeTree(Node(), outcomes, features)
+        tree = makeTree(Node(), outcomes, features, 0)
         print('THIS IS DAD')
         printTree(tree)
 
