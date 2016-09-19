@@ -1,4 +1,5 @@
 import sys
+
 def board(line):
     board = []
     for col in range(0,6):
