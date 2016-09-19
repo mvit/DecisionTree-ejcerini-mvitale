@@ -132,6 +132,48 @@ def k_fold_data(data, k):
         dset.append((data[i:i*k]))
     return dset
 
+def printTree(node):
+    tree = bfs(node)
+
+    for n in tree:
+        if n == "NEXT":
+            sys.stdout.write("\n")
+        else:
+            sys.stdout.write(n + " ")
+
+def bfs(node):
+    visited = []
+    queue = []
+    tempqueue = []
+
+    outofchildren = False
+
+    visited.add(node.feature)
+    visited.add("NEXT")
+
+    for n in node.nodes:
+        queue.add(n)
+
+    while not outofchildren:
+
+        while queue:
+
+            n = queue.pop(0)
+
+            visited.add(n.feature)
+
+            for child in n.nodes:
+                tempqueue.add(child)
+
+        visited.add("NEXT")
+
+        if tempqueue:
+            queue = tempqueue
+        else:
+            outofchildren = True
+
+    return visited
+
 def main(argv):
     if (len(argv) < 2):
         print("USAGE: python DecisionTree.py infile.csv num_folds")
@@ -163,7 +205,7 @@ def main(argv):
         #Build the tree by information gain
         tree = makeTree(Node(), outcomes, features)
         print('THIS IS DAD')
-        tree.printNode()
+        printTree(tree)
 
 
 if __name__ == "__main__":
