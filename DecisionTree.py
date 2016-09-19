@@ -22,6 +22,31 @@ class Node:
         for node in self.nodes:
             if self.nodes[node]:
                 self.nodes[node].printNode()
+    def printTree(self):
+        tree = self.bfs()
+
+        for n in tree:
+            if n == "NEXT":
+                sys.stdout.write("\n")
+            else:
+                sys.stdout.write(n + " ")
+
+    def bfs(self):
+        queue = []
+        visited = []
+        queue.append(self)
+        while queue:
+            n = queue.pop(0)
+            visited.append(n.feature)
+
+            if not n.nodes:
+                visited.append("NEXT")
+
+            for child in n.nodes:
+                queue.append(n.nodes[child])
+
+
+        return visited
 
 def makeTree(node, outcomes, features, m):
     TotalEntropy = getTotalEntropy(outcomes)
@@ -30,7 +55,6 @@ def makeTree(node, outcomes, features, m):
     best = ''
 
     if ((len(outcomes) == 1) or (not features) or (TotalEntropy == 0.0)):
-        print("--End node--")
         child = Node()
         child.setFeature(str(m))
         return child
@@ -45,7 +69,6 @@ def makeTree(node, outcomes, features, m):
             best = feature
 
     node.setFeature(best)
-
     for value in set(features[best]):        #Get new example list
 
         notbest = copy.deepcopy(features)
@@ -70,7 +93,6 @@ def makeTree(node, outcomes, features, m):
         #Make a subtree from those
         child = makeTree(Node(), new_outcomes, new_features, newm)
         if child :
-            print(child.feature)
             node.addNode(value, child)
 
     return node
@@ -89,7 +111,7 @@ def getTotalEntropy(outcomes):
 
     for c in count:
         countRatio = count[c]/float(total)
-        value -= countRatio * math.log(countRatio, 2)
+        value -= float(countRatio) * math.log(countRatio, 2)
 
     return value
 
@@ -143,50 +165,50 @@ def k_fold_data(data, k):
         dset.append((data[0 + (i*fold_size): fold_size - 1 + (i*fold_size)]))
     return dset
 
-def printTree(node):
-    tree = bfs(node)
-
-    for n in tree:
-        if n == "NEXT":
-            sys.stdout.write("\n")
-        else:
-            sys.stdout.write(n + " ")
-
-def bfs(node):
-    visited = []
-    queue = []
-    tempqueue = []
-
-    outofchildren = False
-
-    visited.append(node.getFeature)
-    visited.append("NEXT")
-
-    for n in node.nodes:
-        queue.append(node.nodes[n])
-
-    print(queue)
-
-    while not outofchildren:
-        while queue:
-            n = queue.pop(0)
-            print("QUEUE STUFF")
-            print(type(n))
-            print(n)
-            print(n.getFeature())
-            visited.append(n.getFeature())
-
-            for child in n.nodes:
-                tempqueue.append(child)
-
-        visited.append("NEXT")
-
-        if tempqueue:
-            queue = tempqueue
-        else:
-            outofchildren = True
-
-    return visited
+# def printTree(node):
+#     tree = bfs(node)
+#
+#     for n in tree:
+#         if n == "NEXT":
+#             sys.stdout.write("\n")
+#         else:
+#             sys.stdout.write(n + " ")
+#
+# def bfs(node):
+#     visited = []
+#     queue = []
+#     tempqueue = []
+#
+#     outofchildren = False
+#
+#     visited.append(node.getFeature)
+#     visited.append("NEXT")
+#
+#     for n in node.nodes:
+#         queue.append(node.nodes[n])
+#
+#     print(queue)
+#
+#     while not outofchildren:
+#         while queue:
+#             n = queue.pop(0)
+#             print("QUEUE STUFF")
+#             print(type(n))
+#             print(n)
+#             print(n.getFeature())
+#             visited.append(n.getFeature())
+#
+#             for child in n.nodes:
+#                 tempqueue.append(n.nodes[child])
+#
+#         visited.append("NEXT")
+#
+#         if tempqueue:
+#             queue = tempqueue
+#         else:
+#             outofchildren = True
+#
+#     return visited
 
 def traverseTree(tree, testData):
     if not tree.nodes:
@@ -232,7 +254,6 @@ def main(argv):
             dataset.append(line)
 
         learnset = k_fold_data(dataset, int(argv[1]))
-        print(len(learnset))
         outcomes = []
         features = {}
 
@@ -250,8 +271,7 @@ def main(argv):
 
         #Build the tree by information gain
         tree = makeTree(Node(), outcomes, features, 0)
-        printTree(tree)
-
+        tree.printTree()
         #Test data
         
 
