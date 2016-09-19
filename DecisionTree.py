@@ -184,6 +184,22 @@ def traverseTree(tree, testData):
 
     return traverseTree(n, testData);
 
+def runTests(tree, testData):
+    successes = 0
+    failures = 0
+
+    for test in testData:
+        result = traverseTree(tree, test)
+        if result is test[outcome]:
+            successes += 1
+        else:
+            failures += 1
+
+    print("{0} tests were run. There were {1} successes and {2} failures.".format(len(testData), successes, failures))
+    error = failures/float(len(testData)) * 100
+    print("The percent error of this training session is {0}%".format(error))
+    return error
+
 def main(argv):
     if (len(argv) < 2):
         print("USAGE: python DecisionTree.py infile.csv num_folds")
