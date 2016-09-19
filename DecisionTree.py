@@ -31,15 +31,15 @@ def makeTree(node, outcomes, features, m):
 
     print("Tree on")
     print(node)
-    TotalEntropy = infoGain(outcomes, outcomes, True)
+    TotalEntropy = getTotalEntropy(outcomes)
     gains = {}
     
     maxval = 0
     best = ''
 
     for feature in features:
-        info = infoGain(outcomes, features[feature], False)
-        val = float(TotalEntropy) - infoGain(outcomes, features[feature], False)
+        info = infoGain(outcomes, features[feature])
+        val = float(TotalEntropy) - infoGain(outcomes, features[feature])
         if (val < maxval):
             maxval = val
             best = feature
@@ -81,7 +81,24 @@ def makeTree(node, outcomes, features, m):
 
     return node
 
-def infoGain(outcomes, features, total):
+def getTotalEntropy(outcomes):
+    count = {}
+    value = 0
+    total = len(outcomes)
+
+    for out in outcomes:
+        count[out] = 0
+
+    for out in outcomes:
+        count[out] += 1
+
+    for c in count:
+        countRatio = c/float(total)
+        value -= countRatio * math.log(countRatio, 2)
+
+    return value
+
+def infoGain(outcomes, features):
 
     TotalGain = 0
 
@@ -114,9 +131,8 @@ def infoGain(outcomes, features, total):
             else:
                 countRatio = c/float(total)
                 value -= float(countRatio) * math.log(countRatio,2)
-                
-            if not total:
-                value *= totalRatio
+
+            value *= totalRatio
             gains.append(value)
 
     for value in gains:
