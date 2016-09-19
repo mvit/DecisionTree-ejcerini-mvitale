@@ -7,9 +7,11 @@ class Node:
         self.nodes = {}
 
     def addNode(self, label, node):
-        print("Adding node")
         self.nodes[label] = node
-    
+
+    def getFeature(self):
+        return self.feature
+
     def setFeature(self, label):
         self.feature = label
 
@@ -22,16 +24,13 @@ class Node:
                 self.nodes[node].printNode()
 
 def makeTree(node, outcomes, features, m):
-    print(outcomes)
-    print(features)
     TotalEntropy = getTotalEntropy(outcomes)
-    print(TotalEntropy)
     gains = {}
     maxval = 0.0
     best = ''
 
-    if ((len(outcomes) == 1) or (not features) or TotalEntropy == 0.0):
-        print("End of Tree")
+    if ((len(outcomes) == 1) or (not features) or (TotalEntropy == 0.0)):
+        print("--End node--")
         child = Node()
         child.setFeature(str(m))
         return child
@@ -41,8 +40,6 @@ def makeTree(node, outcomes, features, m):
         val = float(TotalEntropy - info)
         if (best == ''):
             best = feature
-
-        print((feature, val))
         if (val > maxval):
             maxval = val
             best = feature
@@ -61,7 +58,6 @@ def makeTree(node, outcomes, features, m):
         
         for feature in notbest:
             new_features[feature] = []
-        print(ids)
         for idx in ids:
             new_outcomes.append(outcomes[idx])
             for feature in notbest:
@@ -70,17 +66,12 @@ def makeTree(node, outcomes, features, m):
         mcount = Counter(new_outcomes)
         commonm = mcount.most_common(1)[0]
         newm = int(commonm[0])
-        print(newm)
 
         #Make a subtree from those
-        print("adding child val {0} for node {1}".format(value,best))
         child = makeTree(Node(), new_outcomes, new_features, newm)
         if child :
-            print("child {0} valid".format(value))
+            print(child.feature)
             node.addNode(value, child)
-        else:
-            print("child is empty")
-            break
 
     return node
 
@@ -168,21 +159,22 @@ def bfs(node):
 
     outofchildren = False
 
-    visited.append(node.feature)
+    visited.append(node.getFeature)
     visited.append("NEXT")
 
     for n in node.nodes:
         queue.append(node.nodes[n])
 
     print(queue)
+
     while not outofchildren:
-
         while queue:
-
             n = queue.pop(0)
             print("QUEUE STUFF")
+            print(type(n))
             print(n)
-            visited.append(n.feature)
+            print(n.getFeature())
+            visited.append(n.getFeature())
 
             for child in n.nodes:
                 tempqueue.append(child)
