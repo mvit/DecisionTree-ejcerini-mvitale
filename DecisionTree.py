@@ -6,24 +6,29 @@ class Node:
     #lines = []
 
 def makeTree(outcomes, features):
+    if not features:
+        print("end of tree")
+        return None
+    
     TotalEntropy = infoGain(outcomes, outcomes, True)
 
     gains = {}
     
     maxval = 0
     best = ''
-
+    print("new features")
+    print(features)
     for feature in features:
         val = float(TotalEntropy) - infoGain(outcomes, features[feature], False)
         if (val < maxval):
             maxval = val
             best = feature
-
+    print(best)
+    
     n = Node()
 
     for value in set(features[best]):
         #Get new example list
-
         notbest = copy.deepcopy(features)
         del notbest[best]
         #print(notbest)
@@ -40,8 +45,6 @@ def makeTree(outcomes, features):
             for feature in notbest:
                 new_features[feature].append(features[feature][idx])
         print("node")
-        print(new_outcomes)
-        print(new_features)
         #Make a subtree from those
         n.nodes.append(makeTree(new_outcomes, new_features))
 
