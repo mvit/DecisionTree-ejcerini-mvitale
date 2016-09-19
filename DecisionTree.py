@@ -1,25 +1,39 @@
 import sys, math, array, copy
 
 class Node:
-    feature = ""
-    nodes = {}
-    
-    def printNode(self):
-        # print(self.feature)
-        # for node in self.nodes:
-        #     print("Child {0} of {1}".format(self.nodes.index(node),self.feature))
-        #     if node:
-        #         node.printNode()
-        return self.feature
 
-    def _init_(self):
+    def __init__(self):
         self.feature = ""
-        self.nodes = []
+        self.nodes = {}
+
+    def addNode(self, label, node):
+        print("Adding node")
+        self.nodes[label] = node
+    
+    def setFeature(self, label):
+        self.feature = label
+
+    def printNode(self):
+        print("Node Feature")
+        print(self.feature)
+        print("Splits")
+        print(self.nodes)
+        count = 0
+        for node in self.nodes:
+            count+=1
+            print(count)
+            print(self.nodes[node].feature)
+        for node in self.nodes:
+            if self.nodes[node]:
+                self.nodes[node].printNode()
 
 def makeTree(node, outcomes, features):
     if not features:
+        print("End of Tree")
         return None
-    
+
+    print("Tree on")
+    print(node)
     TotalEntropy = infoGain(outcomes, outcomes, True)
 
     gains = {}
@@ -29,20 +43,15 @@ def makeTree(node, outcomes, features):
     for feature in features:
         info = infoGain(outcomes, features[feature], False)
         val = float(TotalEntropy) - infoGain(outcomes, features[feature], False)
-        print(info)
-        print(val)
         
         if (val < maxval):
             maxval = val
             best = feature
 
-    node.feature = best
-
-    print(node.feature)
+    node.setFeature(best)
 
     for value in set(features[best]):
-        node.nodes[value] = None
-        
+        print(value)
         #Get new example list
         notbest = copy.deepcopy(features)
         del notbest[best]
@@ -61,7 +70,14 @@ def makeTree(node, outcomes, features):
                 new_features[feature].append(features[feature][idx])
 
         #Make a subtree from those
-        node.nodes[value] = makeTree(Node(), new_outcomes, new_features)
+        print("adding child for node {0}".format(best))
+        child = makeTree(Node(), new_outcomes, new_features)
+        if child :
+            print("child {0} valid".format(value))
+            node.addNode(value, child)
+        else:
+            print("child is empty")
+            break
 
     return node
 
@@ -108,6 +124,14 @@ def infoGain(outcomes, features, total):
 
     return TotalGain
 
+def k_fold_data(data, k):
+    dset = []
+    random.shuffle(data)
+    fold_size = len(data)//k
+    for i in range(fold_size):
+        dset.append((data[i:i*k]))
+    return dset
+
 def main(argv):
     if (len(argv) < 2):
         print("USAGE: python DecisionTree.py infile.csv num_folds")
@@ -135,8 +159,10 @@ def main(argv):
                 name_idx = featurenames.index(name)
                 features[name].append(board[feat_idx + 1 + name_idx])
 
+        kfolds = k_fold_data
         #Build the tree by information gain
         tree = makeTree(Node(), outcomes, features)
+        print('THIS IS DAD')
         tree.printNode()
 
 
