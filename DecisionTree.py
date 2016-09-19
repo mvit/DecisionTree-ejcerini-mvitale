@@ -1,4 +1,4 @@
-import sys, math, array, copy
+import sys, math, array, copy, random
 from collections import Counter
 
 class Node:
@@ -41,16 +41,15 @@ def makeTree(node, outcomes, features, m):
     for feature in features:
         info = infoGain(outcomes, features[feature], False)
         val = float(TotalEntropy) - infoGain(outcomes, features[feature], False)
-        
+        print(feature)
+        print(val)
         if (val < maxval):
             maxval = val
             best = feature
 
     node.setFeature(best)
 
-    for value in set(features[best]):
-        print(value)
-        #Get new example list
+    for value in set(features[best]):        #Get new example list
         notbest = copy.deepcopy(features)
         del notbest[best]
         #print(notbest)
@@ -68,7 +67,7 @@ def makeTree(node, outcomes, features, m):
                 new_features[feature].append(features[feature][idx])
 
         mcount = Counter(new_outcomes)
-        newm = mcount.mostCommon()
+        newm = mcount.most_common(1)
         print(newm)
 
         #Make a subtree from those
@@ -130,8 +129,8 @@ def k_fold_data(data, k):
     dset = []
     random.shuffle(data)
     fold_size = len(data)//k
-    for i in range(fold_size):
-        dset.append((data[i:i*k]))
+    for i in range(k):
+        dset.append((data[0 + (i*fold_size): fold_size - 1 + (i*fold_size)]))
     return dset
 
 def printTree(node):
@@ -212,27 +211,35 @@ def main(argv):
         featurenames = labels[feat_idx + 1:]
 
         dataset = []
+        learnset = []
         testset = []
-
-        outcomes = []
-        features = {}
-        
-        #Add arrays per feature
-        for name in featurenames:
-            features[name] = []
 
         #Do feature reading
         for line in file:
             dataset.append(line)
-            
-        for data in dataset:
-            board = line.strip().split(',')
-            outcomes.append(board[feat_idx])
 
-            for name in featurenames:
-                name_idx = featurenames.index(name)
-                features[name].append(board[feat_idx + 1 + name_idx])
+        print(len(dataset))
+        learnset = k_fold_data(dataset, int(argv[1]))
 
+        outcomes = []
+        features = {}
+
+        #Add arrays per feature
+        for name in featurenames:
+            features[name] = []
+        for sets in learnset:
+            testset.append(sets[0])
+            for data in sets[1:]:
+                board = data.strip().split(',')
+                outcomes.append(board[feat_idx])
+                for name in featurenames:
+                    name_idx = featurenames.index(name)
+                    features[name].append(board[feat_idx + 1 + name_idx])
+
+        print(len(outcomes))
+        print(len(testset))
+        print(outcomes)
+        print(features)
         #Build the tree by information gain
         tree = makeTree(Node(), outcomes, features, 0)
         print('THIS IS DAD')
