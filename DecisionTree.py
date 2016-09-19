@@ -49,16 +49,21 @@ class Node:
                 queue.append(n.nodes[child])
         return visited
 
-    def traverseTree(self, key, testData):
+    def traverseTree(self, testData):
+        #Test data is a dictionary where each feature is a key with a corresponding data value.
         if not self.nodes:
+            #Terminal test. If there are no child nodes, return the feature name, which should be mcount.
             return self.feature
         
         print(testData)
-        
+
+        #Get the value to split upon
+        key = testData[self.feature]
+
         if key in self.nodes.keys():
             n = self.nodes[key]
         else:
-            print("No key")
+            print("No key. Cannot split.") #This should never happen, but I guess we can check for it.
             return 0
 
         return n.traverseTree(n, testData);
@@ -181,16 +186,23 @@ def k_fold_data(data, k):
     return dset
 
 def runTests(tree, testData):
+    #In this function, testData is an ARRAY OF DICTIONARIES in the format of testData for traverseTree
+
+    #Set counts to 0
     successes = 0
     failures = 0
 
+    #Test each dictionary on the tree.
     for test in testData:
+        #Get the result.
         result = tree.traverseTree(test, testData[test])
+        #the testData should also hold the outcome in it so it can check against the result of the tree.
         if result is test['outcome']:
             successes += 1
         else:
             failures += 1
 
+    #Basic print statements dictating error.
     print("{0} tests were run. There were {1} successes and {2} failures.".format(len(testData), successes, failures))
     error = failures/float(len(testData)) * 100
     print("The percent error of this training session is {0}%".format(error))
