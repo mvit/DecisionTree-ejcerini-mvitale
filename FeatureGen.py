@@ -5,8 +5,6 @@ def bottomleft(line):
 
 def center(line):
     center = []
-    for idx in range(1, 6):
-        center.append(line[3*idx:5*idx])
     for idx in range(1,5):
         center.append(line[2*idx:4*idx])
     p1 = center.count('1')
