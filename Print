@@ -1,0 +1,44 @@
+import sys
+
+def printTree(node):
+    tree = bfs(node)
+
+    for n in tree:
+        if n == "NEXT":
+            sys.stdout.write("\n")
+        else:
+            sys.stdout.write(n + " ")
+
+
+def bfs(node):
+    visited = []
+    queue = []
+    tempqueue = []
+
+    outofchildren = false
+
+    visited.add(node.feature)
+    visited.add("NEXT")
+
+    for n in node.nodes:
+        queue.add(n)
+
+    while not outofchildren:
+
+        while queue:
+
+            n = queue.pop(0)
+
+            visited.add(n.feature)
+
+            for child in n.nodes:
+                tempqueue.add(child)
+
+        visited.add("NEXT")
+
+        if tempqueue:
+            queue = tempqueue
+        else:
+            outofchildren = True
+
+    return visited
