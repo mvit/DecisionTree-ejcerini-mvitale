@@ -41,37 +41,38 @@ def infoGain(outcomes, features, total):
     
     for feature in features:
         countlist[feature] = [0,0,0]
-
-    for outcome in outcomes:
-        idx = outcomes.index(outcome)
+    
+    print(countlist)
+    
+    for idx in range(len(outcomes)):
+        outcome = outcomes[idx]
         feature = features[idx]
+        
+        print((outcome, feature))
         if outcome=='1':
             countlist[feature][0] += 1
         elif outcome=='2':
             countlist[feature][1] += 1
         else:
             countlist[feature][2] += 1
-
+    
+    print(countlist)
+    
     for val in countlist:
         count = countlist[val]
-
+        print(count)
         total = count[0] + count[1] + count[2]
         totalRatio = total/float(len(outcomes))
         value = 0
 
         for c in count:
-            print(c)
-
             if (c==0):
                 value = 0
             else:
                 countRatio = c/float(total)
-                print(countRatio)
                 value -= countRatio * math.log(countRatio,2)
 
             print(value)
-
-        value *= totalRatio
 
         if not total:
             value *= totalRatio
@@ -114,7 +115,6 @@ def main(argv):
         #Build the tree by information gain
         for feature in features:
             print(feature)
-            print(features[feature])
             infoGain(outcomes, features[feature], False)
 
 if __name__ == "__main__":
