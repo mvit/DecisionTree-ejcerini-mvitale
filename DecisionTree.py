@@ -49,13 +49,19 @@ class Node:
                 queue.append(n.nodes[child])
         return visited
 
-    def traverseTree(self, testData):
+    def traverseTree(self, key, testData):
         if not self.nodes:
             return self.feature
+        
+        print(testData)
+        
+        if key in self.nodes.keys():
+            n = self.nodes[key]
+        else:
+            print("No key")
+            return 0
 
-        n = self.nodes[testData[self.feature]]
-
-        return traverseTree(n, testData);
+        return n.traverseTree(n, testData);
 
 def makeTree(node, outcomes, features, m):
     TotalEntropy = getTotalEntropy(outcomes)
@@ -179,8 +185,8 @@ def runTests(tree, testData):
     failures = 0
 
     for test in testData:
-        result = tree.traverseTree(test)
-        if result is test[outcome]:
+        result = tree.traverseTree(test, testData[test])
+        if result is test['outcome']:
             successes += 1
         else:
             failures += 1
@@ -222,14 +228,28 @@ def main(argv):
                 board = data.strip().split(',')
                 outcomes.append(board[feat_idx])
                 for name in featurenames:
-                    name_idx = featurenames.index(name)
-                    features[name].append(board[feat_idx + 1 + name_idx])
+                    name_idx = featurenames.index(name) + 1 + feat_idx
+                    features[name].append(board[name_idx])
 
         #Build the tree by information gain
         tree = makeTree(Node(), outcomes, features, 0)
-        tree.printTree()
-        #Test data
+        #tree.printTree()
 
+        #Prepare Test data
+        test = {
+            'outcomes':[]
+        }
+        for name in featurenames:
+            test[name] = []
+
+        for sets in testset:
+            board = sets.strip().split(',')
+            test['outcomes'].append(board[feat_idx])
+            for name in featurenames:
+                name_idx = featurenames.index(name) + 1 + feat_idx
+                test[name].append(board[name_idx])
+
+        runTests(tree, test)
 
 if __name__ == "__main__":
     main(sys.argv[1:])
