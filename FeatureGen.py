@@ -1,4 +1,12 @@
 import sys
+def board(line):
+    board = []
+    for col in range(0,6):
+        carray = []
+        for row in range(0,7):
+            carray.append(line[(col*7) + row])
+        board.append(carray)
+    return board
 
 def bottomleft(line):
     return line[0]
@@ -21,12 +29,8 @@ def threeinrow(line):
     p1threes = 0
     p2threes = 0
 
-    for col in range(0,6):
-        #Print the column
-        print(line[col*7:(col*7)+7])
-        for row in range(0,7):
-            #Print the individual element
-            print(line[(col*7) + row])
+    barray = board(line)
+
     print("BOARD END")
     return 0
 
@@ -76,7 +80,6 @@ def main(argv):
         outfile.write('\n')
         
         for line in file:
-            print(line)
             outfile.write(line.strip() + ',')
             board = line.split(',')
             #Piece in the lower left corner
