@@ -3,7 +3,13 @@ import sys, math, array, copy
 class Node:
     feature = ""
     nodes = []
-    #lines = []
+
+    def printNode(self):
+        print(self.feature)
+        for node in self.nodes:
+            print("Child {0} of {1}".format(self.nodes.index(node),self.feature))
+            if node:
+                node.printNode()
 
     def _init_(self):
         feature = ""
@@ -11,7 +17,6 @@ class Node:
 
 def makeTree(outcomes, features):
     if not features:
-        print("end of tree")
         return None
     
     TotalEntropy = infoGain(outcomes, outcomes, True)
@@ -20,16 +25,20 @@ def makeTree(outcomes, features):
     
     maxval = 0
     best = ''
-    print("new features")
-    print(features)
     for feature in features:
+        info = infoGain(outcomes, features[feature], False)
         val = float(TotalEntropy) - infoGain(outcomes, features[feature], False)
+        print(info)
+        print(val)
+        
         if (val < maxval):
             maxval = val
             best = feature
-    print(best)
-    
+
     n = Node()
+    n.feature = best
+
+    print(n.feature)
 
     for value in set(features[best]):
         #Get new example list
@@ -48,7 +57,6 @@ def makeTree(outcomes, features):
             new_outcomes.append(outcomes[idx])
             for feature in notbest:
                 new_features[feature].append(features[feature][idx])
-        print("node")
         #Make a subtree from those
         n.nodes.append(makeTree(new_outcomes, new_features))
 
@@ -126,6 +134,7 @@ def main(argv):
 
         #Build the tree by information gain
         n = makeTree(outcomes, features)
+        n.printNode()
 
 
 if __name__ == "__main__":
