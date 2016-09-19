@@ -22,6 +22,7 @@ class Node:
         for node in self.nodes:
             if self.nodes[node]:
                 self.nodes[node].printNode()
+
     def printTree(self):
         tree = self.bfs()
 
@@ -30,6 +31,7 @@ class Node:
                 sys.stdout.write("\n")
             else:
                 sys.stdout.write(n + " ")
+        sys.stdout.write("\n")
 
     def bfs(self):
         queue = []
@@ -38,15 +40,22 @@ class Node:
         while queue:
             n = queue.pop(0)
             visited.append(n.feature)
-
-            if not n.nodes:
+            if n.nodes:
+                visited.append("NEXT")
+                visited.extend(n.nodes.keys())
                 visited.append("NEXT")
 
             for child in n.nodes:
                 queue.append(n.nodes[child])
-
-
         return visited
+
+    def traverseTree(self, testData):
+        if not self.nodes:
+            return self.feature
+
+        n = self.nodes[testData[self.feature]]
+
+        return traverseTree(n, testData);
 
 def makeTree(node, outcomes, features, m):
     TotalEntropy = getTotalEntropy(outcomes)
@@ -165,65 +174,12 @@ def k_fold_data(data, k):
         dset.append((data[0 + (i*fold_size): fold_size - 1 + (i*fold_size)]))
     return dset
 
-# def printTree(node):
-#     tree = bfs(node)
-#
-#     for n in tree:
-#         if n == "NEXT":
-#             sys.stdout.write("\n")
-#         else:
-#             sys.stdout.write(n + " ")
-#
-# def bfs(node):
-#     visited = []
-#     queue = []
-#     tempqueue = []
-#
-#     outofchildren = False
-#
-#     visited.append(node.getFeature)
-#     visited.append("NEXT")
-#
-#     for n in node.nodes:
-#         queue.append(node.nodes[n])
-#
-#     print(queue)
-#
-#     while not outofchildren:
-#         while queue:
-#             n = queue.pop(0)
-#             print("QUEUE STUFF")
-#             print(type(n))
-#             print(n)
-#             print(n.getFeature())
-#             visited.append(n.getFeature())
-#
-#             for child in n.nodes:
-#                 tempqueue.append(n.nodes[child])
-#
-#         visited.append("NEXT")
-#
-#         if tempqueue:
-#             queue = tempqueue
-#         else:
-#             outofchildren = True
-#
-#     return visited
-
-def traverseTree(tree, testData):
-    if not tree.nodes:
-        return tree.feature
-
-    n = tree.nodes[testData[tree.feature]]
-
-    return traverseTree(n, testData);
-
 def runTests(tree, testData):
     successes = 0
     failures = 0
 
     for test in testData:
-        result = traverseTree(tree, test)
+        result = tree.traverseTree(test)
         if result is test[outcome]:
             successes += 1
         else:
@@ -273,7 +229,6 @@ def main(argv):
         tree = makeTree(Node(), outcomes, features, 0)
         tree.printTree()
         #Test data
-        
 
 
 if __name__ == "__main__":
