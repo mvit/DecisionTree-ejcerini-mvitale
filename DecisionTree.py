@@ -23,6 +23,9 @@ class Node:
                 self.nodes[node].printNode()
 
 def makeTree(node, outcomes, features, m):
+    print(outcomes)
+    print(features)
+
     if not features:
         print("End of Tree")
         child = Node()
@@ -39,8 +42,11 @@ def makeTree(node, outcomes, features, m):
 
     for feature in features:
         info = infoGain(outcomes, features[feature])
-        val = float(TotalEntropy) - infoGain(outcomes, features[feature])
-        if (val < maxval):
+        val = float(TotalEntropy - info)
+        print(TotalEntropy)
+        print(info)
+        if (val > maxval):
+            print("new maxval")
             maxval = val
             best = feature
 
@@ -49,7 +55,6 @@ def makeTree(node, outcomes, features, m):
     for value in set(features[best]):        #Get new example list
         notbest = copy.deepcopy(features)
         del notbest[best]
-        #print(notbest)
         new_features = {}
         new_outcomes = []
 
@@ -65,12 +70,11 @@ def makeTree(node, outcomes, features, m):
 
         mcount = Counter(new_outcomes)
         commonm = mcount.most_common(1)[0]
-        print(commonm)
         newm = commonm[1]
         print(newm)
 
         #Make a subtree from those
-        print("adding child for node {0}".format(best))
+        print("adding child val {0} for node {1}".format(value,best))
         child = makeTree(Node(), new_outcomes, new_features, newm)
         if child :
             print("child {0} valid".format(value))
@@ -82,6 +86,7 @@ def makeTree(node, outcomes, features, m):
     return node
 
 def getTotalEntropy(outcomes):
+
     count = {}
     value = 0
     total = len(outcomes)
@@ -93,7 +98,7 @@ def getTotalEntropy(outcomes):
         count[out] += 1
 
     for c in count:
-        countRatio = c/float(total)
+        countRatio = count[c]/float(total)
         value -= countRatio * math.log(countRatio, 2)
 
     return value
@@ -127,13 +132,13 @@ def infoGain(outcomes, features):
 
         for c in count:
             if (c==0):
-                value = 0
+                pass
             else:
                 countRatio = c/float(total)
                 value -= float(countRatio) * math.log(countRatio,2)
 
-            value *= totalRatio
-            gains.append(value)
+        value *= totalRatio
+        gains.append(value)
 
     for value in gains:
         TotalGain += float(value)
@@ -224,35 +229,62 @@ def main(argv):
         labels = file.readline().strip().split(',')
         feat_idx = labels.index('winner')
         featurenames = labels[feat_idx + 1:]
-
-        dataset = []
-        learnset = []
-        testset = []
-
-        #Do feature reading
-        for line in file:
-            dataset.append(line)
-
-        learnset = k_fold_data(dataset, int(argv[1]))
-
+        
         outcomes = []
         features = {}
-
+        
         #Add arrays per feature
         for name in featurenames:
             features[name] = []
-        for sets in learnset:
-            testset.append(sets[0])
-            for data in sets[1:]:
-                board = data.strip().split(',')
-                outcomes.append(board[feat_idx])
-                for name in featurenames:
-                    name_idx = featurenames.index(name)
-                    features[name].append(board[feat_idx + 1 + name_idx])
+
+        #Do feature reading
+        for line in file:
+            board = line.strip().split(',')
+            outcomes.append(board[feat_idx])
+
+            for name in featurenames:
+                name_idx = featurenames.index(name)
+                features[name].append(board[feat_idx + 1 + name_idx])
 
         #Build the tree by information gain
         tree = makeTree(Node(), outcomes, features, 0)
         printTree(tree)
+        # #Do feature recognition
+        # labels = file.readline().strip().split(',')
+        # feat_idx = labels.index('winner')
+        # featurenames = labels[feat_idx + 1:]
+        #
+        # dataset = []
+        # learnset = []
+        # testset = []
+        #
+        # #Do feature reading
+        # for line in file:
+        #     dataset.append(line)
+        #
+        # learnset = k_fold_data(dataset, int(argv[1]))
+        # print(len(learnset))
+        # outcomes = []
+        # features = {}
+        #
+        # #Add arrays per feature
+        # for name in featurenames:
+        #     features[name] = []
+        # for sets in learnset:
+        #     testset.append(sets[0])
+        #     for data in sets[1:]:
+        #         board = data.strip().split(',')
+        #         outcomes.append(board[feat_idx])
+        #         for name in featurenames:
+        #             name_idx = featurenames.index(name)
+        #             features[name].append(board[feat_idx + 1 + name_idx])
+        #
+        # #Build the tree by information gain
+        # tree = makeTree(Node(), outcomes, features, 0)
+        # printTree(tree)
+        #
+        # #Test data
+        
 
 
 if __name__ == "__main__":
