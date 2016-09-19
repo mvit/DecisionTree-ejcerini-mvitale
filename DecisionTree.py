@@ -24,14 +24,10 @@ class Node:
 def makeTree(node, outcomes, features, m):
     print(outcomes)
     print(features)
-    print(m)
-
-    print("Tree on")
-    print(node)
-
     TotalEntropy = getTotalEntropy(outcomes)
+    print(TotalEntropy)
     gains = {}
-    maxval = 0
+    maxval = 0.0
     best = ''
 
     if ((len(outcomes) == 1) or (not features) or TotalEntropy == 0.0):
@@ -43,9 +39,11 @@ def makeTree(node, outcomes, features, m):
     for feature in features:
         info = infoGain(outcomes, features[feature])
         val = float(TotalEntropy - info)
+        if (best == ''):
+            best = feature
 
+        print((feature, val))
         if (val > maxval):
-            print("new maxval")
             maxval = val
             best = feature
 
@@ -170,24 +168,26 @@ def bfs(node):
 
     outofchildren = False
 
-    visited.add(node.feature)
-    visited.add("NEXT")
+    visited.append(node.feature)
+    visited.append("NEXT")
 
     for n in node.nodes:
-        queue.add(n)
+        queue.append(node.nodes[n])
 
+    print(queue)
     while not outofchildren:
 
         while queue:
 
             n = queue.pop(0)
-
-            visited.add(n.feature)
+            print("QUEUE STUFF")
+            print(n)
+            visited.append(n.feature)
 
             for child in n.nodes:
-                tempqueue.add(child)
+                tempqueue.append(child)
 
-        visited.add("NEXT")
+        visited.append("NEXT")
 
         if tempqueue:
             queue = tempqueue
